@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Journey of Physics – Premium Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- SFX -->
+    <audio id="sound-click" src="assets/sounds/click.mp3"></audio>
+    <audio id="sound-correct" src="assets/sounds/correct.mp3"></audio>
+    <audio id="sound-wrong" src="assets/sounds/wrong.mp3"></audio>
+    <audio id="sound-levelup" src="assets/sounds/levelup.mp3"></audio>
+    <audio id="sound-alt" src="assets/sounds/sfx2.mp3"></audio>
+
+    <!-- Background music -->
+    <audio
+      id="bg-music"
+      src="assets/sounds/bg-music.mp3"
+      loop
+      preload="auto"
+    ></audio>
+
+    <!-- INTRO SCREEN (STEP 1 & 2) -->
+    <div id="introScreen" class="intro-screen">
+      <div class="intro-panel" id="introStep1">
+        <h1>Journey of Physics</h1>
+        <p class="intro-subtitle">
+          Media pembelajaran interaktif untuk menelusuri sejarah perkembangan fisika
+          dari peradaban kuno hingga fisika modern.
+        </p>
+
+        <div class="intro-grid">
+          <section class="intro-card">
+            <h2>Identitas Tugas</h2>
+            <p><strong>Mata kuliah:</strong> Sejarah Fisika</p>
+            <p><strong>Dosen pengampu:</strong> Vandan Wiliyanti, S.Pd</p>
+          </section>
+
+          <section class="intro-card">
+            <h2>Kelompok</h2>
+            <p><strong>Kelompok 1</strong></p>
+            <ul>
+              <li>Ahmad Rafli Zafran Yassar – 2511090001</li>
+              <li>Lola – 2511090029</li>
+              <li>Meysha Diwanda – 25110900</li>
+              <li>Tarisa Ayu Aulia – 2511090048</li>
+              <li>Uut Naila Afifa Wulandari – 2511090051</li>
+            </ul>
+          </section>
+        </div>
+
+        <p class="intro-note">
+          Silakan lanjut ke langkah berikutnya untuk mengisi identitas pengguna sebelum
+          mulai menjelajah peta perjalanan fisika.
+        </p>
+
+        <button id="introNextBtn" class="primary-btn intro-btn" type="button">
+          Lanjut ke Identitas Pengguna
+        </button>
+      </div>
+
+      <div class="intro-panel hidden" id="introStep2">
+        <h1>Identitas Pengguna</h1>
+        <p class="intro-subtitle">
+          Data ini hanya disimpan di perangkat ini (local storage) dan digunakan untuk menampilkan profil di aplikasi.
+        </p>
+
+        <form class="intro-form" id="introForm" onsubmit="return false;">
+          <div class="form-row">
+            <label for="introName">Nama</label>
+            <input
+              type="text"
+              id="introName"
+              placeholder="Masukkan nama lengkap"
+              autocomplete="off"
+              required
+            />
+          </div>
+          <div class="form-row">
+            <label for="introNim">NIM</label>
+            <input
+              type="text"
+              id="introNim"
+              placeholder="Masukkan NIM"
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-row">
+            <label for="introClass">Kelas</label>
+            <input
+              type="text"
+              id="introClass"
+              placeholder="Contoh: Fisika 3A"
+              autocomplete="off"
+            />
+          </div>
+          <div class="form-row">
+            <label for="introStudy">Program Studi</label>
+            <input
+              type="text"
+              id="introStudy"
+              placeholder="Contoh: Pendidikan Fisika"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="intro-actions">
+            <button
+              id="introBackBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Kembali
+            </button>
+            <button
+              id="introStartBtn"
+              class="primary-btn"
+              type="submit"
+            >
+              Mulai Menjelajah
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- APP ROOT -->
+    <div class="app-root">
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="branding">
+          <img
+            src="assets/images/logo-kampus.png"
+            alt="Logo Kampus"
+            class="logo-img"
+          />
+          <div>
+            <h1>Journey of Physics</h1>
+            <p>Media Pembelajaran Interaktif – Sejarah Perkembangan Fisika.</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="toggleSoundBtn" class="ghost-btn" type="button">
+            Suara: ON
+          </button>
+          <button id="toggleMusicBtn" class="ghost-btn" type="button">
+            Musik: OFF
+          </button>
+          <button id="toggleThemeBtn" class="ghost-btn" type="button">
+            Mode Gelap
+          </button>
+          <button id="resetProgressBtn" class="ghost-btn" type="button">
+            Reset Progress
+          </button>
+        </div>
+      </header>
+
+      <!-- RANDOM FACT BAR -->
+      <section class="fact-bar" id="factBar">
+        <span class="fact-label">Fakta Fisika:</span>
+        <span id="factText"></span>
+        <button id="nextFactBtn" class="fact-next-btn" type="button">
+          →
+        </button>
+      </section>
+
+      <!-- MAIN LAYOUT -->
+      <main class="app-main">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <!-- Player card -->
+          <section class="card">
+            <h2>Profil Pengguna</h2>
+            <div class="profile-block">
+              <div class="avatar-circle"></div>
+              <div class="profile-info">
+                <div class="profile-name" id="playerNameDisplay">
+                  Player Fisika
+                </div>
+                <div id="profileMeta" class="profile-meta"></div>
+                <button id="editNameBtn" class="tiny-btn" type="button">
+                  Ubah Nama
+                </button>
+              </div>
+            </div>
+
+            <div class="stat-grid">
+              <div class="stat-item">
+                <span class="stat-label">Skor Total</span>
+                <span class="stat-value" id="totalScoreDisplay">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Level Selesai</span>
+                <span class="stat-value" id="completedCountDisplay">0/8</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Soal Dijawab</span>
+                <span class="stat-value" id="answeredCountDisplay">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Akurasi</span>
+                <span class="stat-value" id="accuracyDisplay">0%</span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-wrapper">
+              <div class="progress-label-row">
+                <span>Progres Petualangan</span>
+                <span id="progressPercentLabel">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progressFill"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Identitas Tugas -->
+          <section class="card identity-card">
+            <h2>Identitas Tugas</h2>
+
+            <div class="lecturer-row">
+              <img
+                src="assets/images/foto-dosen.jpg"
+                alt="Foto Dosen Pengampu"
+                class="lecturer-photo"
+              />
+              <div>
+                <div class="identity-label">Dosen Pengampu</div>
+                <div class="identity-value">Vandan Wiliyanti, S.Pd</div>
+                <div class="identity-label">Mata Kuliah</div>
+                <div class="identity-value">Sejarah Fisika</div>
+              </div>
+            </div>
+
+            <div class="group-box">
+              <div class="identity-label">Kelompok</div>
+              <div class="identity-value">Kelompok 1</div>
+
+              <ul class="group-list">
+                <li>Ahmad Rafli Zafran Yassar – 2511090001</li>
+                <li>Lola – 2511090029</li>
+                <li>Meysha Diwanda – 25110900</li>
+                <li>Tarisa Ayu Aulia – 2511090048</li>
+                <li>Uut Naila Afifa Wulandari – 2511090051</li>
+              </ul>
+            </div>
+
+            <p class="intro-text">
+              Aplikasi ini disusun sebagai media pembelajaran interaktif
+              untuk mata kuliah <strong>Sejarah Fisika</strong>, menelusuri
+              perjalanan ilmu fisika dari peradaban kuno hingga fisika modern.
+            </p>
+          </section>
+
+          <!-- Modes -->
+          <section class="card">
+            <h2>Mode Permainan</h2>
+            <button id="modeNormalBtn" class="primary-btn full-width">
+              Mode Belajar
+            </button>
+            <button id="modeChallengeBtn" class="secondary-btn full-width">
+              Challenge Mode (60 detik)
+            </button>
+            <button id="modeExtremeBtn" class="danger-btn full-width">
+              Extreme Mode (Salah -1)
+            </button>
+          </section>
+
+          <!-- Badges -->
+          <section class="card">
+            <h2>Badge & Pencapaian</h2>
+            <div id="badgeContainer" class="badge-container"></div>
+          </section>
+
+          <!-- Scientist cards -->
+          <section class="card">
+            <h2>Kartu Ilmuwan</h2>
+            <div id="scientistContainer" class="scientist-container"></div>
+          </section>
+
+          <!-- Leaderboard -->
+          <section class="card">
+            <h2>Leaderboard Lokal</h2>
+            <ol id="leaderboardList" class="leaderboard-list"></ol>
+          </section>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <section class="content">
+          <!-- Map Card -->
+          <section class="card map-card">
+            <div class="card-header-row">
+              <h2>Peta Perjalanan Fisika</h2>
+              <span class="map-subtitle">
+                Klik level pada peta untuk memulai.
+              </span>
+            </div>
+            <div id="mapContainer" class="map-grid"></div>
+          </section>
+
+          <!-- Stats Card -->
+          <section class="card">
+            <h2>Rangkuman Belajar</h2>
+            <div class="summary-grid">
+              <div>
+                <h3>Ringkasan</h3>
+                <ul class="summary-list" id="summaryList"></ul>
+              </div>
+              <div>
+                <h3>Catatan</h3>
+                <ul class="summary-notes">
+                  <li>Gunakan level pada peta sebagai pintu masuk materi.</li>
+                  <li>Pakai Challenge Mode untuk latihan cepat.</li>
+                  <li>Extreme Mode cocok untuk menguji konsistensi.</li>
+                  <li>Atur suara dan musik di bagian header.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <!-- OVERLAY + MODALS -->
+    <div id="overlay" class="overlay hidden"></div>
+
+    <!-- Level Modal -->
+    <div id="levelModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" data-close-modal="levelModal">×</button>
+        <div class="modal-header">
+          <h2 id="levelTitle"></h2>
+          <span id="levelTag" class="pill"></span>
+        </div>
+        <p id="levelDescription" class="muted"></p>
+
+        <article class="level-body">
+          <h3>Materi Singkat</h3>
+          <p id="levelContent"></p>
+
+          <div id="levelImageWrapper" class="level-image-wrapper hidden">
+            <img id="levelImage" alt="Ilustrasi materi" />
+            <p id="levelImageCaption" class="image-caption"></p>
+          </div>
+        </article>
+
+        <section class="question-section">
+          <h3>Soal Pemahaman</h3>
+          <p id="questionText" class="question-text"></p>
+          <div id="optionsContainer" class="options-grid"></div>
+        </section>
+
+        <div class="modal-footer-row">
+          <button
+            id="narratorBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            Putar Narasi
+          </button>
+          <button
+            id="submitAnswerBtn"
+            class="primary-btn"
+            type="button"
+            disabled
+          >
+            Jawab
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" data-close-modal="resultModal">×</button>
+        <h2 id="resultTitle"></h2>
+        <p id="resultMessage"></p>
+        <div id="resultStats" class="result-stats"></div>
+        <div id="unlockedInfo" class="unlocked-info"></div>
+        <button id="resultOkBtn" class="primary-btn full-width" type="button">
+          Lanjutkan
+        </button>
+      </div>
+    </div>
+
+    <!-- Cutscene Modal -->
+    <div id="cutsceneModal" class="modal hidden">
+      <div class="modal-content cutscene">
+        <button class="modal-close" data-close-modal="cutsceneModal">
+          ×
+        </button>
+        <h2 id="cutsceneTitle"></h2>
+        <p id="cutsceneText"></p>
+        <button
+          id="cutsceneContinueBtn"
+          class="primary-btn full-width"
+          type="button"
+        >
+          Lanjut Perjalanan
+        </button>
+      </div>
+    </div>
+
+    <!-- Challenge Modal -->
+    <div id="challengeModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" data-close-modal="challengeModal">
+          ×
+        </button>
+        <h2 id="challengeTitle">Challenge Mode</h2>
+        <p class="muted">
+          Jawab sebanyak mungkin soal dalam waktu terbatas. Perhatikan ketentuan
+          mode yang dipilih.
+        </p>
+
+        <div class="challenge-info-row">
+          <div>Sisa waktu: <span id="challengeTimeDisplay">60</span> detik</div>
+          <div>
+            Benar:
+            <span id="challengeCorrectDisplay">0</span> |
+            Salah: <span id="challengeWrongDisplay">0</span>
+          </div>
+        </div>
+
+        <div class="challenge-question">
+          <p id="challengeQuestionText"></p>
+          <div id="challengeOptionsContainer" class="options-grid"></div>
+        </div>
+
+        <button
+          id="endChallengeBtn"
+          class="secondary-btn full-width"
+          type="button"
+        >
+          Akhiri Challenge
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
